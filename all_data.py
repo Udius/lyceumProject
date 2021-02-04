@@ -12,3 +12,6 @@ key = {
     'right': False,
     'bottom': False
 }
+
+# ---< FILES >---
+map_file = "map.png"
