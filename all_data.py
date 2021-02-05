@@ -1,9 +1,11 @@
-WIDTH = 1024
-HEIGHT = 720
+WIDTH = 650
+HEIGHT = 450
+FPS = 60
 
-mapCoords = '37.6156,55.7522'
-
-map_request = f"http://static-maps.yandex.ru/1.x/?ll={mapCoords}&spn=0.5,0.5&l=map"
+mapCords = ['37.6156', '55.7522']
+mapType = 'map'
+speed = [0, 0]
+zoom = 1
 
 # Клавиши стрелок: если нажаты, то будет True
 key = {
