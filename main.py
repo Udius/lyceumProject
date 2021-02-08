@@ -30,6 +30,12 @@ def checkEvent():
                 key['left'] = True
             elif event.key == K_RIGHT:
                 key['right'] = True
+            elif event.key == K_1:
+                key['1'] = True
+            elif event.key == K_2:
+                key['2'] = True
+            elif event.key == K_3:
+                key['3'] = True
 
         elif event.type == KEYUP:
             if event.key == K_UP:
@@ -40,6 +46,12 @@ def checkEvent():
                 key['left'] = False
             elif event.key == K_RIGHT:
                 key['right'] = False
+            elif event.key == K_1:
+                key['1'] = True
+            elif event.key == K_2:
+                key['2'] = True
+            elif event.key == K_3:
+                key['3'] = True
 
         elif event.type == MOUSEBUTTONDOWN and 0 < zoom < 20:
             if event.button == 4:
@@ -102,6 +114,9 @@ image = getMap()
 while True:
     newImage = checkEvent()
 
+    '''
+    Работаем с клавишами
+    '''
     speed = [0, 0]
     if key['left']:
         speed[0] -= 0.5 * zoom
@@ -112,6 +127,9 @@ while True:
     if key['bottom']:
         speed[1] -= 0.5 * zoom
 
+    '''
+    Запрос на новую карту, если мы перемещаемся, или карты нету впринципе
+    '''
     if speed != [0, 0] or newImage is not None:
         mapCords[0] = str(float(mapCords[0]) + speed[0])
         mapCords[1] = str(float(mapCords[1]) + speed[1])

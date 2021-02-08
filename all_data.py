@@ -12,7 +12,10 @@ key = {
     'top': False,
     'left': False,
     'right': False,
-    'bottom': False
+    'bottom': False,
+    '1': False,
+    '2': False,
+    '3': False
 }
 
 # ---< FILES >---
