@@ -4,6 +4,7 @@ import pygame, requests
 from pygame.locals import *
 
 from all_data import *
+from all_classes import *
 
 
 def terminate():
@@ -67,6 +68,7 @@ def checkEvent():
                     zoom -= 0.3
 
                 image = getMap()
+
             elif event.button == 5:
                 if zoom < 0.05:
                     zoom += 0.0005
@@ -80,13 +82,13 @@ def checkEvent():
                     zoom += 0.3
 
                 image = getMap()
+
     return image
 
 
 def getMap():
     cords = ','.join(mapCords)
     map_request = f"http://static-maps.yandex.ru/1.x/?ll={cords}&spn={str(zoom)},{str(zoom)}&l={mapType}&size=650,450"
-    print(zoom)
     response = requests.get(map_request)
 
     if not response:
@@ -109,6 +111,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 pygame.display.set_caption('Lyceum project')
 
+Button('search', (WIDTH - 80, HEIGHT - 32))
+
 image = getMap()
 
 while True:
@@ -127,6 +131,22 @@ while True:
     if key['bottom']:
         speed[1] -= 0.5 * zoom
 
+    if key['1']:
+        mapType = 'map'
+        image = getMap()
+    elif key['2']:
+        mapType = 'sat'
+        image = getMap()
+    elif key['3']:
+        mapType = 'sat,trf,skl'
+        image = getMap()
+
+    '''
+    Обновляем все спрайты
+    '''
+
+    all_UI.update()
+
     '''
     Запрос на новую карту, если мы перемещаемся, или карты нету впринципе
     '''
@@ -137,6 +157,7 @@ while True:
 
     # Drawing
     screen.blit(image, (0, 0))
+    all_UI.draw(screen)
 
     # Flip & wait
     pygame.display.update()
