@@ -125,6 +125,19 @@ def getMap():
     return image
 
 
+def getMapForCoord(name_of_txt):
+    geocoder_request = f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={name_of_txt}1&format=json"
+    response = requests.get(geocoder_request)
+    if response:
+        cords = response.json()["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["Point"]["pos"]
+    else:
+        print("Ошибка выполнения запроса:")
+        print(geocoder_request)
+        print("Http статус:", response.status_code, "(", response.reason, ")")
+
+    return cords
+
+
 ui = UI()
 
 btn = ui.newButton('search', 'Search', (WIDTH - 130, HEIGHT - 50), size=(110, 35), rectColor=(40, 40, 40))
@@ -169,6 +182,10 @@ while True:
 
     clickedButton = ui.update()
     if clickedButton == 'search':
+        cords = getMapForCoord(tEdit.text)
+        if cords:
+            mapCords = cords.split()
+            image = getMap()
         print('Search button clicked')
 
     '''

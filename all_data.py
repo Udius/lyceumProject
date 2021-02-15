@@ -34,6 +34,7 @@ mapCords = ['37.6156', '55.7522']
 mapType = 'map'
 speed = [0, 0]
 zoom = 1
+
 texts = list()
 textTyping = ['']
 
