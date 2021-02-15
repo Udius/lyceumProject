@@ -129,7 +129,11 @@ def getMapForCoord(name_of_txt):
     geocoder_request = f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={name_of_txt}1&format=json"
     response = requests.get(geocoder_request)
     if response:
-        cords = response.json()["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["Point"]["pos"]
+        try:
+            cords = response.json()["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["Point"]["pos"]
+        except:
+            cords = None
+            print('[ERROR] - wrong data format')
     else:
         print("Ошибка выполнения запроса:")
         print(geocoder_request)
@@ -182,11 +186,29 @@ while True:
 
     clickedButton = ui.update()
     if clickedButton == 'search':
-        cords = getMapForCoord(tEdit.text)
-        if cords:
-            mapCords = cords.split()
+        inputData = ''.join(tEdit.text.split())
+
+        rightData = True
+        if len(inputData.split(',')) != 2:
+            rightData = False
+        for i in inputData.split(','):
+            if i.count('.') > 1:
+                rightData = False
+            for j in i.split('.'):
+                if not j.isdigit():
+                    rightData = False
+
+        if not rightData:
+            cords = getMapForCoord(inputData)
+            if cords:
+                result = cords.split()
+                if result is not None:
+                    mapCords = result
+                    image = getMap()
+            print('Search button clicked')
+        else:
+            mapCords = inputData.split(',')
             image = getMap()
-        print('Search button clicked')
 
     '''
     Запрос на новую карту, если мы перемещаемся, или карты нету впринципе
