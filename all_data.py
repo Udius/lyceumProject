@@ -25,12 +25,17 @@ WIDTH = 650
 HEIGHT = 450
 FPS = 60
 
+pygame.init()
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+clock = pygame.time.Clock()
+pygame.display.set_caption('Lyceum project')
+
 mapCords = ['37.6156', '55.7522']
 mapType = 'map'
 speed = [0, 0]
 zoom = 1
-
-all_UI = pygame.sprite.Group()
+texts = list()
+textTyping = ['']
 
 # Клавиши стрелок: если нажаты, то будет True
 key = {
@@ -40,7 +45,11 @@ key = {
     'bottom': False,
     '1': False,
     '2': False,
-    '3': False
+    '3': False,
+    'lCtrl': False,
+    'backspace': False,
+    'v': False,
+    'mouse': (False, False, False)
 }
 
 ui_images = {
@@ -49,3 +58,11 @@ ui_images = {
 
 # ---< FILES >---
 map_file = "map.png"
+
+fonts = {
+    'arial': {
+        '20': pygame.font.SysFont('arial', 20),
+        '22': pygame.font.SysFont('arial', 22),
+        '28': pygame.font.SysFont('arial', 28)
+    }
+}

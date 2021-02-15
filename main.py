@@ -4,7 +4,7 @@ import pygame, requests
 from pygame.locals import *
 
 from all_data import *
-from all_classes import *
+from UI import *
 
 
 def terminate():
@@ -15,7 +15,8 @@ def terminate():
 
 
 def checkEvent():
-    global zoom
+    global zoom, lastBackspaceClick
+    key['mouse'] = pygame.mouse.get_pressed()
 
     image = None
     for event in pygame.event.get():
@@ -37,6 +38,18 @@ def checkEvent():
                 key['2'] = True
             elif event.key == K_3:
                 key['3'] = True
+            elif event.key == K_LCTRL:
+                key['lCtrl'] = True
+            elif event.key == K_v:
+                key['v'] = True
+
+            if event.key == K_BACKSPACE:
+                key['backspace'] = True
+            elif event.unicode.isalnum() or event.unicode in ' .,;:"<>':
+                '''
+                Using in UI.tEdit
+                '''
+                textTyping[0] += event.unicode
 
         elif event.type == KEYUP:
             if event.key == K_UP:
@@ -48,15 +61,21 @@ def checkEvent():
             elif event.key == K_RIGHT:
                 key['right'] = False
             elif event.key == K_1:
-                key['1'] = True
+                key['1'] = False
             elif event.key == K_2:
-                key['2'] = True
+                key['2'] = False
             elif event.key == K_3:
-                key['3'] = True
+                key['3'] = False
+            elif event.key == K_LCTRL:
+                key['lCtrl'] = False
+            elif event.key == K_v:
+                key['v'] = False
+            elif event.key == K_BACKSPACE:
+                key['backspace'] = False
 
         elif event.type == MOUSEBUTTONDOWN and 0 < zoom < 20:
             if event.button == 4:
-                if zoom < 0.05:
+                if zoom < 0.01:
                     zoom -= 0.0005
                 elif zoom < 0.1:
                     zoom -= 0.01
@@ -70,7 +89,7 @@ def checkEvent():
                 image = getMap()
 
             elif event.button == 5:
-                if zoom < 0.05:
+                if zoom < 0.01:
                     zoom += 0.0005
                 elif zoom < 0.1:
                     zoom += 0.01
@@ -106,15 +125,15 @@ def getMap():
     return image
 
 
-pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-clock = pygame.time.Clock()
-pygame.display.set_caption('Lyceum project')
+ui = UI()
 
-Button('search', (WIDTH - 80, HEIGHT - 32))
+btn = ui.newButton('search', 'Search', (WIDTH - 130, HEIGHT - 50), size=(110, 35), rectColor=(40, 40, 40))
+btn.setFont(fonts['arial']['28'])
+
+tEdit = ui.newTextEdit('searchData', (WIDTH - 460, HEIGHT - 50), size=(310, 35))
+tEdit.setFont(fonts['arial']['22'])
 
 image = getMap()
-
 while True:
     newImage = checkEvent()
 
@@ -131,21 +150,26 @@ while True:
     if key['bottom']:
         speed[1] -= 0.5 * zoom
 
-    if key['1']:
+    if key['lCtrl'] and key['1']:
         mapType = 'map'
         image = getMap()
-    elif key['2']:
+        key['1'] = False
+    elif key['lCtrl'] and key['2']:
         mapType = 'sat'
         image = getMap()
-    elif key['3']:
+        key['2'] = False
+    elif key['lCtrl'] and key['3']:
         mapType = 'sat,trf,skl'
         image = getMap()
+        key['3'] = False
 
     '''
-    Обновляем все спрайты
+    Работа с интерфейсом
     '''
 
-    all_UI.update()
+    clickedButton = ui.update()
+    if clickedButton == 'search':
+        print('Search button clicked')
 
     '''
     Запрос на новую карту, если мы перемещаемся, или карты нету впринципе
@@ -157,7 +181,7 @@ while True:
 
     # Drawing
     screen.blit(image, (0, 0))
-    all_UI.draw(screen)
+    ui.draw(screen)
 
     # Flip & wait
     pygame.display.update()
